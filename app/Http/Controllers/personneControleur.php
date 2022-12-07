@@ -9,15 +9,15 @@ class personneControleur extends Controller
       public function index()
 {
     // On récupère tous les utilisateurs
-    $users = personne::all();
+    $pers = personne::all();
 
     // On retourne les informations des utilisateurs en JSON
-    return response()->json($users);
+    return response()->json($pers);
 }
 public function show($id)
 {
-    $user = personne::find($id);
-    return response()->json($user, 200);
+    $per = personne::find($id);
+    return response()->json($per, 200);
 
 }
 public function store(Request $request)
@@ -31,7 +31,7 @@ public function store(Request $request)
     ]);
 
     // On crée un nouvel utilisateur
-    $user = personne::create([
+    $per = personne::create([
         'nom' => $request->nom,
         'prenom' => $request->prenom,
          'email' => $request->email,
@@ -40,9 +40,9 @@ public function store(Request $request)
     
     
     // On retourne les informations du nouvel utilisateur en JSON
-    return response()->json($user, 201);
+    return response()->json($per, 201);
 }
-public function update(Request $request,personne $user)
+public function update(Request $request, $id)
 {
     //La validation de données
     $this->validate($request, [
@@ -54,22 +54,24 @@ public function update(Request $request,personne $user)
 
     // On modifie les informations de l'utilisateur
 
-    $user->update([
+        $per = personne::findOrFail($id);
+
+    $per->update([
         'nom' => $request->nom,
         'prenom' => $request->prenom,
          'email' => $request->email,
     ]);
 
     // On retourne la réponse JSON
-    return response()->json();
+     return response()->json($per, 200);
 }
 
-public function destroy(personne $user)
+public function destroy($id)
 {
     // On supprime l'utilisateur
-    $user->delete();
+    personne::destroy($id);
 
     // On retourne la réponse JSON
-    return response()->json();
+       return response()->json(["res" => "ok"], 201);
 }
 }
